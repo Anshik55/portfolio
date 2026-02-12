@@ -4,7 +4,7 @@ import { THEME_ORDER } from "../data/themes";
 import { THEMES } from "../data/themes";
 
 export default function ThemeSwitcher() {
-  const { theme, themeId, cycleTheme } = useTheme();
+  const { theme, themeId, cycleTheme, toggleMode, mode } = useTheme();
   const [hovered, setHovered] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
@@ -23,8 +23,44 @@ export default function ThemeSwitcher() {
       gap: "8px",
     }}>
       {/* Expanded theme options */}
-      {expanded && THEME_ORDER.filter(id => id !== themeId).map((id, i) => {
-        const t = THEMES[id];
+      {expanded && (
+        <>
+          {/* Mode Toggle */}
+          <button
+            onClick={() => {
+              toggleMode();
+              setExpanded(false);
+            }}
+            style={{
+              width: "48px",
+              height: "48px",
+              borderRadius: "50%",
+              border: `2px solid ${theme.primary}66`,
+              background: theme.bg,
+              color: theme.primary,
+              fontSize: "18px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              boxShadow: `0 4px 20px ${theme.primary}33`,
+              transition: "all 0.3s",
+              animation: `fadeUp 0.3s ease both`,
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = "scale(1.15)";
+              e.currentTarget.style.boxShadow = `0 4px 30px ${theme.primary}55`;
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = "scale(1)";
+              e.currentTarget.style.boxShadow = `0 4px 20px ${theme.primary}33`;
+            }}
+          >
+            {mode === "dark" ? "☀️" : "🌙"}
+          </button>
+
+          {THEME_ORDER.filter(id => id !== themeId).map((id, i) => {
+        const t = THEMES[id][mode];
         return (
           <button
             key={id}
@@ -71,6 +107,8 @@ export default function ThemeSwitcher() {
           </button>
         );
       })}
+      </>
+      )}
 
       {/* Main toggle button */}
       <button

@@ -12,18 +12,30 @@ export function ThemeProvider({ children }) {
     }
   });
 
-  const theme = THEMES[themeId] || THEMES.cyber;
+  const [mode, setMode] = useState(() => {
+    try {
+      return localStorage.getItem("portfolio-mode") || "dark";
+    } catch {
+      return "dark";
+    }
+  });
+
+  // Safe fallback if themeId or mode is invalid
+  const activeThemeGroup = THEMES[themeId] || THEMES.cyber;
+  const theme = activeThemeGroup[mode] || activeThemeGroup.dark;
 
   useEffect(() => {
     try {
       localStorage.setItem("portfolio-theme", themeId);
+      localStorage.setItem("portfolio-mode", mode);
     } catch {}
+    
     // Set CSS variables on root
     const root = document.documentElement;
     root.style.setProperty("--bg", theme.bg);
     root.style.setProperty("--primary", theme.primary);
     root.style.setProperty("--scrollbar-thumb", theme.scrollbarThumb);
-  }, [themeId, theme]);
+  }, [themeId, mode, theme]);
 
   const cycleTheme = useCallback(() => {
     setThemeId((prev) => {
@@ -32,8 +44,12 @@ export function ThemeProvider({ children }) {
     });
   }, []);
 
+  const toggleMode = useCallback(() => {
+    setMode((prev) => (prev === "dark" ? "light" : "dark"));
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ theme, themeId, cycleTheme }}>
+    <ThemeContext.Provider value={{ theme, themeId, mode, cycleTheme, toggleMode }}>
       {children}
     </ThemeContext.Provider>
   );
