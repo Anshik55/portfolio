@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
-import { CyberButton, ParticleField, MagneticWrap, AnimatedCounter, ScrollReveal } from "./UI";
+import { CyberButton, ParticleField, MagneticWrap, AnimatedCounter, ScrollReveal, GlitchText } from "./UI";
 import ForestBackground from "./backgrounds/ForestBackground";
 import OceanBackground from "./backgrounds/OceanBackground";
 
@@ -137,10 +137,14 @@ export default function Hero({ onNav }) {
               height: "32px", marginBottom: "32px",
               fontSize: "15px", color: theme.secondary,
               fontFamily: theme.fontMono, letterSpacing: "2px",
-              display: "flex", alignItems: "center", gap: "8px",
+              display: "flex", alignItems: "center", gap: "12px",
             }}>
               <span style={{ color: `${theme.primary}88` }}>//</span>
-              <span>{typedText}</span>
+              {themeId === "cyber" ? (
+                 <GlitchText text={typedText} />
+              ) : (
+                <span>{typedText}</span>
+              )}
               <span style={{ animation: "blink 1s infinite", color: theme.primary }}>|</span>
             </div>
 
